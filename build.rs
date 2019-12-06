@@ -128,7 +128,7 @@ fn cpy<P: AsRef<Path>, Q: AsRef<Path>>(from: P, to: Q) {
 ///////////////////////////////////////////////////////////////////////////////
 
 pub const STATIC_LIBS: &[(&str, &str)] = &[
-    ("libx264", "./libx264.a"),
+    ("x264", "./libx264.a"),
 ];
 
 pub const HEADERS: &[&str] = &[
@@ -141,77 +141,40 @@ pub const HEADERS: &[&str] = &[
 
 fn build() {
     let out_path = out_dir();
-    // // SETUP
-    // extract_tar_file("archive/libwebp@v1.0.3.tar", &out_path);
-    // let source_path = {
-    //     let xs = files_with_prefix(&out_path, "webmproject-libwebp-");
-    //     lookup_newest(xs).expect("extracted webp source files from tar archive")
-    // };
-    // // BUILD
-    // run_make(&source_path, "makefile.unix");
-    // // LINK
-    // println!("cargo:rustc-link-search=native={}", {
-    //     source_path
-    //         .join("src")
-    //         .to_str()
-    //         .expect("PathBuf as str")
-    // });
-    // println!("cargo:rustc-link-search=native={}", {
-    //     source_path
-    //         .join("src/demux")
-    //         .to_str()
-    //         .expect("PathBuf as str")
-    // });
-    // // println!("cargo:rustc-link-search=native={}", {
-    // //     source_path
-    // //         .join("imageio")
-    // //         .to_str()
-    // //         .expect("PathBuf as str")
-    // // });
-    // for (name, _) in WEBP_STATIC_LIBS {
-    //     println!("cargo:rustc-link-lib=static={}", name);
-    // }
-    // // for (name, _) in IMAGEIO_STATIC_LIBS {
-    // //     println!("cargo:rustc-link-lib=static={}", name);
-    // // }
-    // // // * DYNAMIC LIBRARY DEPENDENCIES - TODO: PHASE OUT
-    // // println!("cargo:rustc-link-lib=jpeg");
-    // // println!("cargo:rustc-link-lib=png");
-    // // CODEGEN
-    // let codegen = |file_name: &str, headers: &[&str]| {
-    //     let codegen = bindgen::Builder::default();
-    //     let codegen = headers
-    //         .iter()
-    //         .fold(codegen, |codegen: bindgen::Builder, path: &&str| -> bindgen::Builder {
-    //             let path: &str = path.clone();
-    //             let path: PathBuf = source_path.join(path);
-    //             let path: &str = path.to_str().expect("PathBuf to str");
-    //             codegen.header(path)
-    //         });
-    //     codegen
-    //         .generate_comments(true)
-    //         .generate()
-    //         .expect("Unable to generate bindings")
-    //         .write_to_file(out_path.join(file_name))
-    //         .expect("Couldn't write bindings!");    
-    // };
-    // codegen("bindings_webp.rs", WEBP_HEADERS);
-    // // // codegen("bindings_imageio.rs", IMAGEIO_HEADERS);
-    // // // COMPILE CBITS
-    // // cc::Build::new()
-    // //     .include({
-    // //         source_path
-    // //             .to_str()
-    // //             .expect("PathBuf to str")
-    // //     })
-    // //     .include({
-    // //         source_path
-    // //             .join("src")
-    // //             .to_str()
-    // //             .expect("PathBuf to str")
-    // //     })
-    // //     .file("cbits.c")
-    // //     .compile("cbits");
+    // SETUP
+    extract_tar_file("archive/x264-stable.tar.gz", &out_path);
+    let source_path = out_path.join("x264-stable");
+    assert!(source_path.exists());
+    // BUILD
+    run_make(&source_path, "Makefile");
+    // LINK
+    println!("cargo:rustc-link-search=native={}", {
+        source_path.to_str().expect("PathBuf as str")
+    });
+    for (name, _) in STATIC_LIBS {
+        println!("cargo:rustc-link-lib=static={}", name);
+    }
+    // CODEGEN
+    let codegen = |file_name: &str, headers: &[&str]| {
+        let codegen = bindgen::Builder::default();
+        let codegen = codegen.header("include/prelude.h");
+        let codegen = headers
+            .iter()
+            .fold(codegen, |codegen: bindgen::Builder, path: &&str| -> bindgen::Builder {
+                let path: &str = path.clone();
+                let path: PathBuf = source_path.join(path);
+                let path: &str = path.to_str().expect("PathBuf to str");
+                assert!(PathBuf::from(path).exists());
+                codegen.header(path)
+            });
+        codegen
+            .generate_comments(true)
+            .generate()
+            .expect("Unable to generate bindings")
+            .write_to_file(out_path.join(file_name))
+            .expect("Couldn't write bindings!");    
+    };
+    codegen("bindings_x264.rs", HEADERS);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -219,5 +182,5 @@ fn build() {
 ///////////////////////////////////////////////////////////////////////////////
 
 fn main() {
-
+    build();
 }
