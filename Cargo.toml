@@ -3,8 +3,11 @@ name = "x264-dev"
 version = "0.1.0"
 authors = ["colbyn <hello@colbyn.com>"]
 edition = "2018"
-publish = false
-readme = "README.md"
+keywords = ["video"]
+description = "Rust bindings to libx264."
+license = "MIT"
+homepage = "https://github.com/imager-io/x264-dev"
+repository = "https://github.com/imager-io/x264-dev"
 
 [dependencies]
 libc = "^0.2"
