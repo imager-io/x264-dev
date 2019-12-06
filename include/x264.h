@@ -41,6 +41,7 @@ extern "C" {
 # endif
 #endif
 
+#include <stdint.h>
 #include <stdarg.h>
 
 #include "x264_config.h"
