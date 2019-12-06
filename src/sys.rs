@@ -255,7 +255,6 @@ pub unsafe fn x264_encoder_headers(
     pp_nal: *mut *mut X264NalT,
     pi_nal: *mut ::std::os::raw::c_int,
 ) -> ::std::os::raw::c_int {
-    let pp_nal = unimplemented!();
     crate::raw::x264_encoder_headers(
         arg1,
         pp_nal,
@@ -276,7 +275,6 @@ pub unsafe fn x264_encoder_encode(
     pic_in: *mut X264PictureT,
     pic_out: *mut X264PictureT,
 ) -> ::std::os::raw::c_int {
-    let pp_nal = unimplemented!();
     crate::raw::x264_encoder_encode(
         arg1,
         pp_nal,
