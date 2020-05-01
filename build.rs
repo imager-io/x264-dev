@@ -193,7 +193,7 @@ fn build() {
             .iter()
             .fold(codegen, |codegen: bindgen::Builder, path: &&str| -> bindgen::Builder {
                 let path: &str = path.clone();
-                let path: PathBuf = source_path.join(path);
+                let path: PathBuf = install_prefix().join("include").join(path);
                 let path: &str = path.to_str().expect("PathBuf to str");
                 assert!(PathBuf::from(path).exists());
                 codegen.header(path)
