@@ -110,6 +110,8 @@ fn run_make(source_path: &PathBuf, makefile: &str) {
         .arg(source_path)
         .arg("-f")
         .arg(makefile)
+        .arg("-j")
+        .arg(num_cpus::get().to_string())
         .output()
         .expect(&format!("make -C {:?} failed", source_path));
 }
