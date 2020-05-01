@@ -207,6 +207,7 @@ fn build() {
     };
     codegen("bindings_x264.rs", HEADERS);
     // CARGO METADATA
+    println!("cargo:libs={}", install_prefix().join("lib").to_str().unwrap());
     println!("cargo:pkgconfig={}", install_prefix().join("lib").join("pkgconfig").to_str().unwrap());
 }
 
