@@ -9,6 +9,7 @@ license = "MIT"
 homepage = "https://github.com/imager-io/x264-dev"
 repository = "https://github.com/imager-io/x264-dev"
 readme = "README.md"
+links = "x264"
 
 [dependencies]
 libc = "^0.2"
