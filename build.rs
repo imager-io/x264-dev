@@ -121,7 +121,8 @@ fn build_x264() {
     let mut prefix_arg = OsString::from("--prefix=");
     prefix_arg.push(&install_prefix());
 
-    let result = Command::new("./configure")
+    let result = Command::new("bash")
+        .arg("configure")
         .arg(prefix_arg)
         .arg("--disable-cli")
         .arg("--enable-static")
